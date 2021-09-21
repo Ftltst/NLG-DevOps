@@ -1,4 +1,1 @@
-# NLG-DevOps
-Education purposes
-NEWSTUFF
-file is empty. no one left behind
+folder terraform and every test.txt
