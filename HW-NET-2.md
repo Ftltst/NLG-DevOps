@@ -7,7 +7,8 @@ ipconfig - win
 ## 2
 
 Протокол neighbor discovery protocol
-Пакет - NDP ** не совсем понял сути вопроса - он идет как вспомогательный для IPv6 **
+Пакет - NDP 
+**не совсем понял сути вопроса - он идет как вспомогательный для IPv6**
 Команды - ndp [hostname]
 
 ## 3
@@ -28,7 +29,7 @@ IPADDR=192.168.2.100
 NETMASK=255.255.255.0
 VLAN=yes
 ```
-** /etc/sysconfig/network-scripts/\[interface\] **
+**/etc/sysconfig/network-scripts/\[interface\]**
 
 ip link
 
@@ -42,7 +43,7 @@ mode-1, mode-2 и далее до mode-6
 5 - Адаптивная балансировки нагрузки трафика (входящий трафик на 1, исходящий распределяется)
 6 - Адаптивная балансировка нагрузки балансируется и входящий и исходящий трафик
 
-** DEVICE=bond0 NAME=bond0 TYPE=Bond BONDING_MASTER=yes IPADDR=XXX.XXX.XXX.XXX PREFIX=24 ONBOOT=yes BOOTPROTO=none BONDING_OPTS="mode=0 miimon=0" **
+**DEVICE=bond0 NAME=bond0 TYPE=Bond BONDING_MASTER=yes IPADDR=XXX.XXX.XXX.XXX PREFIX=24 ONBOOT=yes BOOTPROTO=none BONDING_OPTS="mode=0 miimon=0"**
 
 ## 5
 
