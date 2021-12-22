@@ -30,22 +30,80 @@
 
 ### Ваш скрипт:
 ```python
-???
+
+import socket
+import json
+import yaml
+
+oldips_json = []
+oldips_yml = []
+tempdict = {'www.google.com': "", 'drive.google.com': "", 'mail.google.com': ""}
+
+with open("jsonfile.json", "r") as oldfile:
+    try:
+        oldips_json = json.loads(oldfile.read())
+        # print("old: ", oldips)
+    except Exception as ex:
+        print(ex)
+# YML-READ part ##########################
+with open("ymlfile.yml", "r") as oldfile:
+    try:
+        oldips_yml = yaml.full_load(oldfile.read())
+        # print("old: ", oldips)
+    except Exception as ex:
+        print(ex)
+        
+# GETTING IP AND FORMING JSON-FILE #########################
+ip1_new = socket.gethostbyname('www.google.com')
+data = [ip1_new]
+for hostname in tempdict:
+    ip_new = socket.gethostbyname(hostname)
+    tempdict[hostname] = ip_new
+# print(json.dumps(tempdict))
+with open('jsonfile.json', 'w') as outfile:
+    json.dump(tempdict, outfile)
+for host in oldips_json:
+    if host not in tempdict:
+        print(f"new host: {host}")
+    else:
+        if oldips_json[host] != tempdict[host]:
+            print(f"[ERROR] URL: {host} {oldips_json[host]} to {tempdict[host]}")
+
+# GETTING IP AND FORMING YML-FILE ##########################
+ip1_new = socket.gethostbyname('www.google.com')
+data = [ip1_new]
+for hostname in tempdict:
+    ip_new = socket.gethostbyname(hostname)
+    tempdict[hostname] = ip_new
+# print(json.dumps(tempdict))
+with open('ymlfile.yml', 'w') as outfile:
+    yaml.dump(tempdict, outfile)
+for host in oldips_yml:
+    if host not in tempdict:
+        print(f"new host: {host}")
+    else:
+        if oldips_yml[host] != tempdict[host]:
+            print(f"[ERROR] URL:{host} {oldips_yml[host]} to {tempdict[host]}")
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+[ERROR] URL: www.google.com 64.233.161.99 to 173.194.222.147
+[ERROR] URL: drive.google.com 142.250.150.194 to 173.194.73.194
+[ERROR] URL:drive.google.com 142.250.150.194 to 173.194.73.194
+[ERROR] URL:www.google.com 64.233.161.99 to 173.194.222.147
 ```
 
 ### json-файл(ы), который(е) записал ваш скрипт:
 ```json
-???
+{"www.google.com": "173.194.222.147", "drive.google.com": "173.194.73.194", "mail.google.com": "74.125.131.17"}
 ```
 
 ### yml-файл(ы), который(е) записал ваш скрипт:
 ```yaml
-???
+drive.google.com: 173.194.73.194
+mail.google.com: 74.125.131.17
+www.google.com: 173.194.222.147
 ```
 
 ## Дополнительное задание (со звездочкой*) - необязательно к выполнению
