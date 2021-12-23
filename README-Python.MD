@@ -25,9 +25,9 @@ is_change = True
 for result in result_os.split('\n'):
     if result.find('modified') != -1:
         prepare_result = result.replace('\tmodified:   ', os.getcwd())
-        fin_result = prepare_result.replace('\\', '/')
+        fin_result = prepare_result.replace('\\', '/') #win система, разные разделители
         print(fin_result)
-        
+
 ```
 1. Доработать скрипт выше так, чтобы он мог проверять не только локальный репозиторий в текущей директории, а также умел воспринимать путь к репозиторию, который мы передаём как входной параметр. Мы точно знаем, что начальство коварное и будет проверять работу этого скрипта в директориях, которые не являются локальными репозиториями.
 ```python
@@ -62,13 +62,6 @@ with open("jsonfile.json", "r") as oldfile:
         # print("old: ", oldips)
     except Exception as ex:
         print(ex)
-# YML-READ part ##########################
-with open("ymlfile.yml", "r") as oldfile:
-    try:
-        oldips_yml = yaml.full_load(oldfile.read())
-        # print("old: ", oldips)
-    except Exception as ex:
-        print(ex)
 # GETTING IP AND FORMING JSON-FILE #########################
 ip1_new = socket.gethostbyname('www.google.com')
 data = [ip1_new]
@@ -84,23 +77,6 @@ for host in oldips_json:
     else:
         if oldips_json[host] != tempdict[host]:
             print(f"[ERROR] URL: {host} {oldips_json[host]} to {tempdict[host]}")
-
-# GETTING IP AND FORMING YML-FILE ##########################
-ip1_new = socket.gethostbyname('www.google.com')
-data = [ip1_new]
-for hostname in tempdict:
-    ip_new = socket.gethostbyname(hostname)
-    tempdict[hostname] = ip_new
-# print(json.dumps(tempdict))
-with open('ymlfile.yml', 'w') as outfile:
-    yaml.dump(tempdict, outfile)
-for host in oldips_yml:
-    if host not in tempdict:
-        print(f"new host: {host}")
-    else:
-        if oldips_yml[host] != tempdict[host]:
-            print(f"[ERROR] URL:{host} {oldips_yml[host]} to {tempdict[host]}")
-
 ```
 ## Дополнительное задание (со звездочкой*) - необязательно к выполнению
 
