@@ -16,16 +16,18 @@
 1. Мы устроились на работу в компанию, где раньше уже был DevOps Engineer. Он написал скрипт, позволяющий узнать, какие файлы модифицированы в репозитории, относительно локальных изменений. Этим скриптом недовольно начальство, потому что в его выводе есть не все изменённые файлы, а также непонятен полный путь к директории, где они находятся. Как можно доработать скрипт ниже, чтобы он исполнял требования вашего руководителя?
 
 ```python
-	#!/usr/bin/env python3
-	import os
-	
-	bash_command = ["cd C:/Git/NLG-DevOps", "git status"]
-	result_os = os.popen(' && '.join(bash_command)).read()
-	is_change = True
-	for result in result_os.split('\n'):
-		if result.find('modified') != -1:
-			prepare_result = result.replace('\tmodified:   ', '')
-			print(prepare_result)
+#!/usr/bin/env python3
+import os
+
+bash_command = ["cd C:/Git/NLG-DevOps", "git status"]
+result_os = os.popen(' && '.join(bash_command)).read()
+is_change = True
+for result in result_os.split('\n'):
+    if result.find('modified') != -1:
+        prepare_result = result.replace('\tmodified:   ', os.getcwd())
+        fin_result = prepare_result.replace('\\', '/')
+        print(fin_result)
+        
 ```
 1. Доработать скрипт выше так, чтобы он мог проверять не только локальный репозиторий в текущей директории, а также умел воспринимать путь к репозиторию, который мы передаём как входной параметр. Мы точно знаем, что начальство коварное и будет проверять работу этого скрипта в директориях, которые не являются локальными репозиториями.
 ```python
@@ -48,44 +50,56 @@
 1. Наша команда разрабатывает несколько веб-сервисов, доступных по http. Мы точно знаем, что на их стенде нет никакой балансировки, кластеризации, за DNS прячется конкретный IP сервера, где установлен сервис. Проблема в том, что отдел, занимающийся нашей инфраструктурой очень часто меняет нам сервера, поэтому IP меняются примерно раз в неделю, при этом сервисы сохраняют за собой DNS имена. Это бы совсем никого не беспокоило, если бы несколько раз сервера не уезжали в такой сегмент сети нашей компании, который недоступен для разработчиков. Мы хотим написать скрипт, который опрашивает веб-сервисы, получает их IP, выводит информацию в стандартный вывод в виде: <URL сервиса> - <его IP>. Также, должна быть реализована возможность проверки текущего IP сервиса c его IP из предыдущей проверки. Если проверка будет провалена - оповестить об этом в стандартный вывод сообщением: [ERROR] <URL сервиса> IP mismatch: <старый IP> <Новый IP>. Будем считать, что наша разработка реализовала сервисы: drive.google.com, mail.google.com, google.com.
 ```python
 import socket
+import json
+import yaml
+oldips_json = []
+oldips_yml = []
+tempdict = {'www.google.com': "", 'drive.google.com': "", 'mail.google.com': ""}
 
-file1 = open('myfile1.txt', 'r')
-ip1_old = file1.read()
-file1.close()
-
-file2 = open('myfile2.txt', 'r')
-ip2_old = file2.read()
-file2.close()
-
-file3 = open('myfile3.txt', 'r')
-ip3_old = file3.read()
-file3.close()
-# print("old", ip1_old, ip2_old, ip3_old)
-
-file1 = open('myfile1.txt', 'w')
+with open("jsonfile.json", "r") as oldfile:
+    try:
+        oldips_json = json.loads(oldfile.read())
+        # print("old: ", oldips)
+    except Exception as ex:
+        print(ex)
+# YML-READ part ##########################
+with open("ymlfile.yml", "r") as oldfile:
+    try:
+        oldips_yml = yaml.full_load(oldfile.read())
+        # print("old: ", oldips)
+    except Exception as ex:
+        print(ex)
+# GETTING IP AND FORMING JSON-FILE #########################
 ip1_new = socket.gethostbyname('www.google.com')
-file1.write(ip1_new)
-file1.close()
+data = [ip1_new]
+for hostname in tempdict:
+    ip_new = socket.gethostbyname(hostname)
+    tempdict[hostname] = ip_new
+# print(json.dumps(tempdict))
+with open('jsonfile.json', 'w') as outfile:
+    json.dump(tempdict, outfile)
+for host in oldips_json:
+    if host not in tempdict:
+        print(f"new host: {host}")
+    else:
+        if oldips_json[host] != tempdict[host]:
+            print(f"[ERROR] URL: {host} {oldips_json[host]} to {tempdict[host]}")
 
-file2 = open('myfile1.txt', 'w')
-ip2_new = socket.gethostbyname('mail.google.com')
-file2.write(ip2_new)
-file2.close()
-
-file3 = open('myfile1.txt', 'w')
-ip3_new = socket.gethostbyname('drive.google.com')
-file3.write(ip3_new)
-file3.close()
-print("new", ip3_new, ip2_new, ip1_new)
-
-if ip1_new != ip1_old:
-    print("[ERROR]: URL: www.google.com IP_MISMATCH: ", ip1_old, " ", ip1_new)
-
-if ip2_new != ip2_old:
-    print("[ERROR]: URL: mail.google.com IP_MISMATCH: ", ip2_old, " ", ip2_new)
-
-if ip3_new != ip3_old:
-    print("[ERROR]: URL: drive.google.com IP_MISMATCH: ", ip3_old, " ", ip3_new)
+# GETTING IP AND FORMING YML-FILE ##########################
+ip1_new = socket.gethostbyname('www.google.com')
+data = [ip1_new]
+for hostname in tempdict:
+    ip_new = socket.gethostbyname(hostname)
+    tempdict[hostname] = ip_new
+# print(json.dumps(tempdict))
+with open('ymlfile.yml', 'w') as outfile:
+    yaml.dump(tempdict, outfile)
+for host in oldips_yml:
+    if host not in tempdict:
+        print(f"new host: {host}")
+    else:
+        if oldips_yml[host] != tempdict[host]:
+            print(f"[ERROR] URL:{host} {oldips_yml[host]} to {tempdict[host]}")
 
 ```
 ## Дополнительное задание (со звездочкой*) - необязательно к выполнению
