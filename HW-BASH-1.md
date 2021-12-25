@@ -38,10 +38,12 @@
 ```bash
 #! /bin/bash
 rm log
-ips=("192.168.0.1" "173.194.222.113" "87.250.250.242")
+ips=("192.168.0.1:80" "173.194.222.113:80" "87.250.250.242:80")
 
-for ip in "${ips[@]}"; do
-          ping -c 5 $ip >> log
+for i in {1..5}; do
+	for ip in "${ips[@]}"; do
+		  curl $ip >> log
+  done
   done
 ```
 
@@ -49,13 +51,13 @@ for ip in "${ips[@]}"; do
 ```bash
 #! /bin/bash
 
-ips=("192.168.0.1" "173.194.222.113" "87.250.250.242")
+ips=("192.168.0.1:80" "173.194.222.113:80" "87.250.250.242:80"
 
 stop=0
 
 while [[ "$stop" -eq 0 ]]; do
   for ip in "${ips[@]}"; do
-    ping -c 5 $ip >> log
+    curl $ip >> log
     if [[ "$?" -ne 0 ]]; then
       echo "IP $ip is unrechable :-(" >> log;
       stop=1;
