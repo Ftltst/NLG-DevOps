@@ -1,0 +1,15 @@
+Задание 1
+1. рекомендую использовать оба варианта для различных доработок после развертывания
+2. я бы рекоммендовал использовать без центрального сервера 
+3. я бы не рекоммендовал использование агентов
+4. да, мы используем изменяемую и неизменяемую ифнраструктуру логично использовать средства для управления конфигурацией и для инициализации ресурсов
+  
+Задание 2
+Для легаси-кода стянул старый бинарник
+ftltst@Ftltst:~$ terraform --version
+Terraform v0.14.7
+ftltst@Ftltst:~$ terraform_13.1 --version
+Terraform v0.13.1
+
+Your version of Terraform is out of date! The latest version
+is 0.14.7. You can update by downloading from https://www.terraform.io/downloads.html
