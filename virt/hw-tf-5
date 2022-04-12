@@ -1,5 +1,6 @@
 Задание 3
-   ```     package main
+   ```     
+   package main
         
         import "fmt"
         
@@ -20,7 +21,8 @@
         Enter value in foot: 123
         Value converted to Meters: 37 ( 37.49)
         
-``` package main
+``` 
+package main
         
         import "fmt"
         
@@ -44,7 +46,8 @@
         Value list :  [48 2 96 86 3 68 57 82 63 70 37 34 83 27 19 97 9 17 1]
         min value :  1
 
-       ``` package main
+       ``` 
+       package main
         
         import "fmt"
         
